@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/ColinEberhardt/awesome-stars-bot#readme",
   "dependencies": {
-    "awesome-stars": "file:../awesome-stars",
+    "awesome-stars": "0.0.1",
+    "awesome-link-checker": "0.0.1",
     "commander": "^2.9.0",
     "github": "jamestalmage/node-github#follow-redirects",
     "progress": "^1.1.8",

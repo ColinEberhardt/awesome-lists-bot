@@ -8,5 +8,6 @@ Currently the bot does the following:
 
  - Adds a star count for repos, this helps people find popular projects (especially useful for big lists!)
  - Resolves redirects, updating the project / org name when a redirect is found.
+ - Removes links that returns 404s (please double check these deletions before merging in case it is a temporary issue)
 
 More features are on the way!
