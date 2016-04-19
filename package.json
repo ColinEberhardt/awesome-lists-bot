@@ -1,0 +1,27 @@
+{
+  "name": "awesome-stars-bot",
+  "version": "1.0.0",
+  "description": "A bot for running awesome-stars on awesome repos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ColinEberhardt/awesome-stars-bot.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ColinEberhardt/awesome-stars-bot/issues"
+  },
+  "homepage": "https://github.com/ColinEberhardt/awesome-stars-bot#readme",
+  "dependencies": {
+    "awesome-stars": "file:../awesome-stars",
+    "commander": "^2.9.0",
+    "github": "jamestalmage/node-github#follow-redirects",
+    "progress": "^1.1.8",
+    "q": "^1.4.1",
+    "underscore": "^1.8.3"
+  }
+}
