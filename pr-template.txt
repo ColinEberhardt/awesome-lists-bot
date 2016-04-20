@@ -1,13 +1,16 @@
-This Pull Request has been generated automatically by awesome-stars-bot, which was created by @ColinEberhardt. The aim of this bot is to improve the overall standard of the various GitHub-based 'awesome' lists.
+This Pull Request has been generated automatically by awesome-lists-bot, which was created by @ColinEberhardt. The aim of this bot is to improve the overall standard of the various GitHub-based 'awesome' lists.
 
 For questions / comments regarding the bot, or to have your awesome repo removed from the list, please add an issue here:
 
-https://github.com/ColinEberhardt/awesome-stars-bot
+https://github.com/ColinEberhardt/awesome-lists-bot
 
 Currently the bot does the following:
 
- - Adds a star count for repos, this helps people find popular projects (especially useful for big lists!)
- - Resolves redirects, updating the project / org name when a redirect is found.
  - Removes links that returns 404s (please double check these deletions before merging in case it is a temporary issue)
 
-More features are on the way!
+More features are on the way ...
+
+- Add a star count for repos, this helps people find popular projects (especially useful for big lists!)
+- Resolve redirects, updating the project / org name when a redirect is found.
+
+Here's a summary of changes as part of this PR:

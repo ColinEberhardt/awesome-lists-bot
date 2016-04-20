@@ -15,12 +15,15 @@ program
   .version(JSON.parse(packageConfig).version)
   .option('-u, --username [string]', 'GitHub username')
   .option('-p, --password [string]', 'GitHub password or token')
+  .option('-d, --debug', 'Debug mode')
   .parse(process.argv);
 
 if (!program.username || !program.password) {
   console.error('All parameters are mandatory');
   process.exit();
 }
+
+const COMMIT_TITLE = 'Fixed broken links via ' + program.username;
 
 const sideEffect = fn => d => {
   fn(d)
@@ -41,7 +44,8 @@ const merge = (promise, projection) => d =>
     .then(result => Object.assign({}, d, result));
 
 const github = new GitHubApi({
-  version: '3.0.0'
+  version: '3.0.0',
+  debug: program.debug
 });
 github.authenticate({
     type: 'token',
@@ -62,16 +66,16 @@ const getRepoOwner = repoData =>
     .then(repoData => repoData.parent.owner.login);
 
 const getReadmeForRepo = repoData => {
-  return Q.nfcall(github.repos.getContent, {
+  return Q.nfcall(github.repos.getReadme, {
       user: program.username,
-      repo: repoData.repoName,
-      path: 'README.md'
+      repo: repoData.repoName
     })
     .then(sideEffect(d => console.log('Fetched README for repo ' + repoData.repoName)))
     .then(res => {
       return {
         content: new Buffer(res.content, 'base64').toString('utf8'),
-        sha: res.sha
+        sha: res.sha,
+        path: res.path
       };
     });
   };
@@ -104,8 +108,8 @@ const writeReadmeToRepo = (repoData) =>
   Q.nfcall(github.repos.updateFile, {
       user: program.username,
       repo: repoData.repoName,
-      path: 'README.md',
-      message: 'Updated stars and redirects via awesome-stars-bot',
+      path: repoData.path,
+      message: COMMIT_TITLE + '\r\n\r\n' + repoData.report,
       sha: repoData.sha,
       content: new Buffer(repoData.content).toString('base64')
     });
@@ -114,8 +118,8 @@ const createPullRequest = (repoData) =>
   Q.nfcall(github.pullRequests.create, {
     user: repoData.repoOwner,
     repo: repoData.repoName,
-    title: 'Updated stars and redirects via awesome-stars-bot',
-    body: prBody,
+    title: COMMIT_TITLE,
+    body: prBody + '\r\n\r\n' + repoData.report,
     base: 'master',
     head: program.username + ':master'
   });
@@ -134,7 +138,7 @@ const updateToUpstream = (repoData) =>
   })
   .then(refData => {
     return Q.nfcall(github.gitdata.updateReference, {
-      user: 'awesome-stars-bot',
+      user: program.username,
       repo: repoData.repoName,
       ref: 'heads/master',
       sha: refData.object.sha,
@@ -152,13 +156,13 @@ Q.nfcall(github.repos.getAll, {})
   .then(merge(getRepoOwner, d => { return {repoOwner: d}; }))
   // check if the bot already has a pending PR
   .then(merge(getUpstreamPullRequests, d => { return {upstreamPRs: d}; }))
-  .then(rejectIfTrue(d => d.upstreamPRs.some(pr => pr.user.login === 'awesome-stars-bot'), 'There is already a PR pending - Aborting!'))
+  .then(rejectIfTrue(d => d.upstreamPRs.some(pr => pr.user.login === program.username), 'There is already a PR pending - Aborting!'))
   // update the bot's fork
   .then(merge(updateToUpstream, d => d))
   // get the README and update
-  .then(merge(getReadmeForRepo, d => { return {content: d.content, original: d.content, sha: d.sha}; }))
-  .then(merge(addAwesomeStars, d => { return {content: d}; }))
-  .then(merge(checkLinks, d => { return {content: d}; }))
+  .then(merge(getReadmeForRepo, d => { return {path: d.path, content: d.content, original: d.content, sha: d.sha}; }))
+  /*.then(merge(addAwesomeStars, d => { return {content: d}; })) */
+  .then(merge(checkLinks, d => { return {content: d.content, report: d.report}; }))
   // check if this has resulted in changes
   .then(sideEffect(d => console.log('Checking for differences')))
   .then(rejectIfTrue(d => d.original === d.content, 'Markdown has not changed - Aborting!'))
