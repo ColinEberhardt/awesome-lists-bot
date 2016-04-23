@@ -6,11 +6,10 @@ https://github.com/ColinEberhardt/awesome-lists-bot
 
 Currently the bot does the following:
 
- - Removes links that returns 404s (please double check these deletions before merging in case it is a temporary issue)
-
-More features are on the way ...
-
+- Removes links that returns 404s (please double check these deletions before merging in case it is a temporary issue)
 - Add a star count for repos, this helps people find popular projects (especially useful for big lists!)
 - Resolve redirects, updating the project / org name when a redirect is found.
+
+Although I am beta-testing some of these features on a subset of awesome lists.
 
 Here's a summary of changes as part of this PR:

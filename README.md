@@ -4,4 +4,4 @@ I think the GitHub 'awesome' lists are really awesome! However, maintaining them
 
 This bot (which is very much in beta) is designed to help improve the quality of awesome lists by link checking, following redirects, adding star counts and more ...
 
-For now the bot is just removing broken links, but over time I plan to add more features.
+I am currently beta-testing this functionality on a number of lists.
