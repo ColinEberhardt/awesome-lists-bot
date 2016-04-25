@@ -26,7 +26,7 @@ if (!program.username || !program.password) {
   process.exit();
 }
 
-const COMMIT_TITLE = 'Fixed broken links via ' + program.username;
+const COMMIT_TITLE = 'Added stars and fixed broken links via ' + program.username;
 
 const sideEffect = fn => d => {
   fn(d)
@@ -182,11 +182,12 @@ Q.nfcall(github.repos.getAll, {})
   // check if this has resulted in changes
   .then(sideEffect(d => console.log('Checking for differences')))
   .then(rejectIfTrue(d => d.original === d.content, 'Markdown has not changed - Aborting!'))
+  .then(sideEffect(d => { if (program.test) { console.log(d.content); } }))
+  .then(rejectIfTrue(() => program.test, 'Test mode, PR not being submitted'))
   // write the changes
   .then(merge(writeReadmeToRepo, d => d))
   .then(sideEffect(d => console.log('Written README for repo ' + d.repoName)))
   // create the PR
-  .then(rejectIfTrue(() => program.test, 'Test mode, PR not being submitted'))
   .then(merge(createPullRequest, d => d))
   .then(sideEffect(d => console.log('PR submitted - all done :-)')))
   .catch(console.error)

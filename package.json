@@ -17,12 +17,13 @@
   },
   "homepage": "https://github.com/ColinEberhardt/awesome-stars-bot#readme",
   "dependencies": {
-    "awesome-stars": "ColinEberhardt/awesome-stars",
     "awesome-link-checker": "ColinEberhardt/awesome-link-checker",
+    "awesome-stars": "ColinEberhardt/awesome-stars",
     "commander": "^2.9.0",
     "github": "jamestalmage/node-github#follow-redirects",
     "progress": "^1.1.8",
     "q": "^1.4.1",
+    "throat": "^2.0.2",
     "underscore": "^1.8.3"
   }
 }
