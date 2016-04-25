@@ -1,0 +1,45 @@
+---
+layout: default
+---
+<div class="row jumbotron">
+  <h1>Awesome Stars Bot</h1>
+  <p>A bot that adds stars and verifies URLs in awesome lists ... making your awesome list even more awesome!</p>
+  <p>Sourcecode for the bot is <a href="https://github.com/ColinEberhardt/awesome-lists-bot">available on GitHub</a></p>
+</div>
+<div>
+  The following is a brief overview of the bots recent activity and status (Updated on {{ site.time | date_to_string }}):
+
+  <h3>Active</h3>
+  Repos which are actively merging bot requests. New pull requests are generated once every two weeks.
+  <ul>
+  {% assign sorted = (site.data.stats.active  | sort: 'latest') | reverse %}
+  {% for project in sorted %}
+    <li>{% include repo.html project=project %} - latest merge: {{ project.latest | date_to_string }}</li>
+  {% endfor %}
+  </ul>
+
+  <h3>Pending</h3>
+  Repos which have not merged any bot requests yet, but have an outstanding PR:
+  <ul>
+  {% assign sorted = (site.data.stats.pending  | sort: 'latest') | reverse %}
+  {% for project in sorted %}
+    <li>{% include repo.html project=project %} - pull request opened: {{ project.latest | date_to_string }}</li>
+  {% endfor %}
+  </ul>
+
+  <h3>New</h3>
+  Repos which have been forked, but no PR submitted by the bot yet:
+  <ul>
+  {% for project in site.data.stats.new %}
+    <li>{% include repo.html project=project %}</li>
+  {% endfor %}
+  </ul>
+
+  <h3>Inactive</h3>
+  Repos which have closed PRs created by this bot, in which case no further PRs will be created:
+  <ul>
+  {% for project in site.data.stats.inactive %}
+    <li>{% include repo.html project=project %} - pull request opened: {{ project.latest | date_to_string }}</li>
+  {% endfor %}
+  </ul>
+</div>
