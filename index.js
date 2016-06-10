@@ -35,15 +35,17 @@ const sideEffect = fn => d => {
 
 const rejectIfTrue = (fn, msg) => d => {
   if (fn(d)) {
-    return Promise.reject(msg)
+    return Promise.reject(msg);
   } else {
     return d;
   }
-}
+};
 
-const merge = (promise, projection) => d =>
-  promise(d)
-    .then(projection)
+const identity = d => d;
+
+const merge = (promise, outTrans = identity, inTrans = identity) => d =>
+  promise(inTrans(d))
+    .then(outTrans)
     .then(result => Object.assign({}, d, result));
 
 const github = new GitHubApi({
@@ -51,15 +53,15 @@ const github = new GitHubApi({
   debug: program.debug
 });
 github.authenticate({
-    type: 'token',
-    token: program.password
+  type: 'token',
+  token: program.password
 });
 
 const reportRateLimit = () => {
   return Q.nfcall(github.misc.rateLimit, {})
     .then(d => d.resources.core.remaining)
     .then(sideEffect(d => console.log('Rate limit remaining', d)));
-}
+};
 
 const getRepoOwner = repoData =>
   Q.nfcall(github.repos.get, {
@@ -109,7 +111,7 @@ const checkLinks = (repoData) => {
         } else {
           bar.tick();
         }
-      })
+      });
   };
 
 const writeReadmeToRepo = (repoData) =>
@@ -151,7 +153,7 @@ const updateToUpstream = (repoData) =>
       ref: 'heads/master',
       sha: refData.object.sha,
       force: true
-    })
+    });
   });
 
 const pickRepo = (repos) => {
@@ -161,34 +163,38 @@ const pickRepo = (repos) => {
     const dateSort = _.sortBy(repos, repo => Date.parse(repo.updated_at));
     return _.last(repos).name;
   }
-}
+};
 
-Q.nfcall(github.repos.getAll, {})
+const chainPromises = (initial, promises) =>
+    promises.reduce(Q.when, Q(initial));
+
+chainPromises(Q.nfcall(github.repos.getAll, {}), [
   // fetch all the repos that this bot operates on and select one to update
-  .then(sideEffect(d => console.log('Fetched ' + d.length + ' repos')))
-  .then(repos => { return { repoName: pickRepo(repos) }; })
-  .then(sideEffect(d => console.log('Updating ' + d.repoName)))
+  sideEffect(d => console.log('Fetched ' + d.length + ' repos')),
+  repos => ({ repoName: pickRepo(repos) }),
+  sideEffect(d => console.log('Updating ' + d.repoName)),
   // get the owner, for the purposes of PRs etc ...
-  .then(merge(getRepoOwner, d => { return {repoOwner: d}; }))
+  merge(getRepoOwner, d => ({repoOwner: d})),
   // check if the bot already has a pending PR
-  .then(merge(getUpstreamPullRequests, d => { return {upstreamPRs: d}; }))
-  .then(rejectIfTrue(d => d.upstreamPRs.some(pr => pr.user.login === program.username), 'There is already a PR pending - Aborting!'))
+  merge(getUpstreamPullRequests, d => ({upstreamPRs: d})),
+  rejectIfTrue(d => d.upstreamPRs.some(pr => pr.user.login === program.username), 'There is already a PR pending - Aborting!'),
   // update the bot's fork
-  .then(merge(updateToUpstream, d => d))
+  merge(updateToUpstream),
   // get the README and update
-  .then(merge(getReadmeForRepo, d => { return {path: d.path, content: d.content, original: d.content, sha: d.sha}; }))
-  .then(merge(addAwesomeStars, d => { return {content: d}; }))
-  .then(merge(checkLinks, d => { return {content: d.content, report: d.report}; }))
+  merge(getReadmeForRepo, d => ({path: d.path, content: d.content, original: d.content, sha: d.sha})),
+  merge(addAwesomeStars, d => ({content: d})),
+  merge(checkLinks, d => ({content: d.content, report: d.report})),
   // check if this has resulted in changes
-  .then(sideEffect(d => console.log('Checking for differences')))
-  .then(rejectIfTrue(d => d.original === d.content, 'Markdown has not changed - Aborting!'))
-  .then(sideEffect(d => { if (program.test) { console.log(d.content); } }))
-  .then(rejectIfTrue(() => program.test, 'Test mode, PR not being submitted'))
+  sideEffect(d => console.log('Checking for differences')),
+  rejectIfTrue(d => d.original === d.content, 'Markdown has not changed - Aborting!'),
+  sideEffect(d => { if (program.test) { console.log(d.content); } }),
+  rejectIfTrue(() => program.test, 'Test mode, PR not being submitted'),
   // write the changes
-  .then(merge(writeReadmeToRepo, d => d))
-  .then(sideEffect(d => console.log('Written README for repo ' + d.repoName)))
+  merge(writeReadmeToRepo),
+  sideEffect(d => console.log('Written README for repo ' + d.repoName)),
   // create the PR
-  .then(merge(createPullRequest, d => d))
-  .then(sideEffect(d => console.log('PR submitted - all done :-)')))
-  .catch(console.error)
-  .finally(reportRateLimit);
+  merge(createPullRequest),
+  sideEffect(d => console.log('PR submitted - all done :-)'))
+])
+.catch(console.error)
+.finally(reportRateLimit);
