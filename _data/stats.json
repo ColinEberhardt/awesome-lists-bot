@@ -1,13 +1,33 @@
 {
-  "pending": [
+  "active": [
     {
       "statuses": {
-        "open": 1
+        "merged": 1
       },
       "name": "awesome-aws",
       "owner": "donnemartin",
       "latest": "2016-04-21T08:20:30.000Z"
     },
+    {
+      "statuses": {
+        "open": 1,
+        "merged": 1
+      },
+      "name": "awesome-cyclejs",
+      "owner": "cyclejs-community",
+      "latest": "2016-07-14T13:43:04.000Z"
+    },
+    {
+      "statuses": {
+        "open": 1,
+        "merged": 1
+      },
+      "name": "awesome-xamarin",
+      "owner": "benoitjadinon",
+      "latest": "2016-07-14T13:36:43.000Z"
+    }
+  ],
+  "pending": [
     {
       "statuses": {
         "open": 1
@@ -28,22 +48,6 @@
       "statuses": {
         "open": 1
       },
-      "name": "awesome-microservices",
-      "owner": "mfornos",
-      "latest": "2016-04-24T06:24:16.000Z"
-    },
-    {
-      "statuses": {
-        "open": 1
-      },
-      "name": "awesome-mondo",
-      "owner": "rdingwall",
-      "latest": "2016-04-23T14:15:52.000Z"
-    },
-    {
-      "statuses": {
-        "open": 1
-      },
       "name": "awesome-promises",
       "owner": "wbinnssmith",
       "latest": "2016-04-23T18:57:44.000Z"
@@ -52,51 +56,9 @@
       "statuses": {
         "open": 1
       },
-      "name": "awesome-react-native",
-      "owner": "jondot",
-      "latest": "2016-04-20T10:58:28.000Z"
-    },
-    {
-      "statuses": {
-        "open": 1
-      },
-      "name": "awesome-scala",
-      "owner": "lauris",
-      "latest": "2016-04-20T16:16:27.000Z"
-    }
-  ],
-  "active": [
-    {
-      "statuses": {
-        "merged": 1
-      },
-      "name": "awesome-cyclejs",
-      "owner": "vic",
-      "latest": "2016-04-23T14:06:25.000Z"
-    },
-    {
-      "statuses": {
-        "merged": 1
-      },
-      "name": "awesome-redux",
-      "owner": "xgrommx",
-      "latest": "2016-04-20T16:02:32.000Z"
-    },
-    {
-      "statuses": {
-        "merged": 1
-      },
       "name": "awesome-vue",
       "owner": "vuejs",
-      "latest": "2016-04-23T14:13:09.000Z"
-    },
-    {
-      "statuses": {
-        "merged": 1
-      },
-      "name": "awesome-xamarin",
-      "owner": "benoitjadinon",
-      "latest": "2016-04-23T18:54:13.000Z"
+      "latest": "2016-07-14T13:25:07.000Z"
     }
   ],
   "inactive": [
@@ -107,6 +69,30 @@
       "name": "awesome-d3",
       "owner": "wbkd",
       "latest": "2016-04-23T14:48:41.000Z"
+    },
+    {
+      "statuses": {
+        "closed": 1
+      },
+      "name": "awesome-microservices",
+      "owner": "mfornos",
+      "latest": "2016-04-24T06:24:16.000Z"
+    },
+    {
+      "statuses": {
+        "closed": 1
+      },
+      "name": "awesome-mondo",
+      "owner": "rdingwall",
+      "latest": "2016-04-23T14:15:52.000Z"
+    },
+    {
+      "statuses": {
+        "closed": 1
+      },
+      "name": "awesome-scala",
+      "owner": "lauris",
+      "latest": "2016-04-20T16:16:27.000Z"
     }
   ],
   "new": [
@@ -114,6 +100,16 @@
       "statuses": {},
       "name": "awesome-javascript",
       "owner": "sorrycc"
+    },
+    {
+      "statuses": {},
+      "name": "awesome-react-native",
+      "owner": "jondot"
+    },
+    {
+      "statuses": {},
+      "name": "awesome-redux",
+      "owner": "xgrommx"
     }
   ]
 }
